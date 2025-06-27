@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Home</title>
+    <style>
+        body {
+            background: #f5f6fa;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Segoe UI', 'Apple SD Gothic Neo', Arial, sans-serif;
+        }
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            padding: 40px 32px 32px 32px;
+            min-width: 320px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .success-icon {
+            width: 56px;
+            height: 56px;
+            margin-bottom: 16px;
+        }
+        h1 {
+            color: #34a853;
+            margin-bottom: 12px;
+            font-size: 2rem;
+        }
+        .user-info {
+            margin-top: 16px;
+            width: 100%;
+        }
+        .user-info p {
+            font-size: 1.1rem;
+            color: #333;
+            margin: 8px 0;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <svg class="success-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="24" cy="24" r="24" fill="#34a853"/>
+            <path d="M34 18L21.5 30.5L14 23" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <h1>구글 로그인 성공!</h1>
+        <div class="user-info">
+            <p th:text="'이름: ' + ${name}"></p>
+            <p th:text="'이메일: ' + ${email}"></p>
+        </div>
+    </div>
+</body>
+</html> 
