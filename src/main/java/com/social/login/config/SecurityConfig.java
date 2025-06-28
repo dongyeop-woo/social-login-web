@@ -1,6 +1,6 @@
 package com.social.login.config;
 
-import com.social.login.service.CustomOAuth2UserService;
+import com.social.login.service.UserServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -8,10 +8,10 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class SecurityConfig {
-    private final CustomOAuth2UserService customOAuth2UserService;
+    private final UserServiceImpl userServiceImpl;
 
-    public SecurityConfig(CustomOAuth2UserService customOAuth2UserService) {
-        this.customOAuth2UserService = customOAuth2UserService;
+    public SecurityConfig(UserServiceImpl userServiceImpl) {
+        this.userServiceImpl = userServiceImpl;
     }
 
     @Bean
@@ -25,7 +25,7 @@ public class SecurityConfig {
                 .loginPage("/login")
                 .defaultSuccessUrl("/", true)
                 .userInfoEndpoint(userInfo -> userInfo
-                    .userService(customOAuth2UserService)
+                    .userService(userServiceImpl)
                 )
             );
         return http.build();
