@@ -20,7 +20,12 @@ public class User {
     private String name;
     private String email;
     private String password;
+
+    @Enumerated(EnumType.STRING)
     private Role role;
+
+    @Enumerated(EnumType.STRING)
     private SocialType socialType;
+
     private String socialId;
 }
