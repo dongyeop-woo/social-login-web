@@ -2,7 +2,11 @@ package com.social.login.mapper;
 
 import com.social.login.dto.UserDto;
 import com.social.login.entity.User;
+import lombok.Getter;
+import org.springframework.stereotype.Component;
 
+@Component
+@Getter
 public class UserMapper {
     public static User toEntity(UserDto dto) {
         return User.builder()
