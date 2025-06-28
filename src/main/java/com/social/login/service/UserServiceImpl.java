@@ -17,7 +17,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-public class CustomOAuth2UserService extends DefaultOAuth2UserService {
+public class UserServiceImpl extends DefaultOAuth2UserService implements UserService {
     private final UserRepository userRepository;
 
     @Override
@@ -26,41 +26,38 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         OAuth2User oAuth2User = super.loadUser(userRequest);
         Map<String, Object> attributes = oAuth2User.getAttributes();
 
-        UserDto userDto = createOrUpdateUserDto(attributes);
+        UserDto userDto = findOrCreateUser(attributes);
         saveUser(userDto);
 
         return oAuth2User;
     }
 
-    private UserDto createOrUpdateUserDto(Map<String, Object> attributes) {
+    @Override
+    @Transactional
+    public UserDto findOrCreateUser(Map<String, Object> attributes) {
         String email = getAttribute(attributes, "email");
         String name = getAttribute(attributes, "name");
         String socialId = getAttribute(attributes, "sub");
 
         return userRepository.findByEmail(email)
                 .map(UserMapper::toDto)
-                .map(dto -> updateUserDto(dto, name, email, socialId))
+                .map(existingDto -> existingDto.toBuilder()
+                        .name(name)
+                        .email(email)
+                        .build())
                 .orElseGet(() -> createNewUserDto(name, email, socialId));
     }
 
-    private String getAttribute(Map<String, Object> attributes, String key) {
+    @Override
+    public String getAttribute(Map<String, Object> attributes, String key) {
         Object value = attributes.get(key);
         return value != null ? value.toString() : null;
     }
 
-    private UserDto updateUserDto(UserDto dto, String name, String email, String socialId) {
-        return UserDto.builder()
-                .id(dto.getId())
-                .name(name)
-                .email(email)
-                .password(dto.getPassword())
-                .role(Role.USER)
-                .socialType(SocialType.GOOGLE)
-                .socialId(socialId)
-                .build();
-    }
 
-    private UserDto createNewUserDto(String name, String email, String socialId) {
+    @Override
+    @Transactional
+    public UserDto createNewUserDto(String name, String email, String socialId) {
         return UserDto.builder()
                 .name(name)
                 .email(email)
@@ -70,7 +67,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .build();
     }
 
-    private void saveUser(UserDto userDto) {
+    @Override
+    @Transactional
+    public void saveUser(UserDto userDto) {
         User user = UserMapper.toEntity(userDto);
         userRepository.save(user);
     }
